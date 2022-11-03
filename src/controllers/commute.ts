@@ -80,3 +80,30 @@ export async function exitWork(req: Request, res: Response) {
     }
     
 }
+
+export async function getTodayChulgunTime(req: Request, res: Response) {
+    const commuteRepository = getManager().getRepository(CommuteEntity);
+    const currentTime = new Date();
+    const year = currentTime.getFullYear();
+    const month = currentTime.getMonth() + 1;
+    const date = currentTime.getDate();
+    const dateStr = `${year}-${month >= 10 ? month : '0' + month}-${date >= 10 ? date : '0' + date}`;
+
+    const commute = await commuteRepository.findOne({
+        where: { user_id: (<any>req).decoded.id, work_date : Raw(work_date => `DATE(${work_date})='${dateStr}'`)  }
+    });
+
+    try {
+        if(commute) {
+            res.status(200).json({
+                time: commute.started_time
+            })
+        }
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({
+          message: err
+        }); 
+    }
+
+}
