@@ -24,7 +24,7 @@ jobs:
       env:
         ENV_B64: "${{ secrets.ENV }}"
       run: |
-        echo "$ENV" > .envB64
+        echo "$ENV_B64" > .envB64
         base64 -d -i .envB64 > .env
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.5.1
