@@ -3,11 +3,12 @@ const format = function (name: string) {
 }
 
 export const ENV_LIST = [
-    // 'DB_NAME',
-    // 'DB_PORT',
-    // 'DB_HOST',
-    // 'DB_USERNAME',
-    // 'DB_PASSWORD',
+    'DB_NAME',
+    'DB_PORT',
+    'DB_HOST',
+    'DB_USERNAME',
+    'DB_PASSWORD',
+    'JWT_SECRET'
 ];
 
 export default async () => {

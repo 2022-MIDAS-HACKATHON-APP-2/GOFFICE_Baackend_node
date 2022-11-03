@@ -7,15 +7,31 @@ import {
     Delete,
     Put,
     Body,
+    Post,
 } from '@decorators/express';
 import { Injectable } from '@decorators/di';
 import { AuthService } from '../services/auth';
+import { CompanyService } from '../services/company';
+import { DepartmentService } from '../services/department';
 
 @Controller('/auth')
 @Injectable()
 export class AuthController {
-    constructor(private readonly authService: AuthService) {
+    constructor(
+        private readonly authService: AuthService,
+        private readonly companyService: CompanyService,
+        private readonly departmentService: DepartmentService
+        ) {
         console.log('AuthController Attached!');
+    }
+
+    @Post('/new')
+    async createNewUser(@Request() req: any, @Response() res: IResponse ) {
+        const { email, password, company, department, position } = req.body;
+        const companyId = await this.companyService.getCompanyId(company);
+        const departmentId = await this.departmentService.getDepartmentId(companyId,department);
+        const user = await this.authService.createAndGetUser(email, password, companyId, departmentId, position );
+
     }
 
 }
