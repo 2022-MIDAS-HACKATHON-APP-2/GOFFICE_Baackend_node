@@ -1,31 +1,35 @@
-import { Injectable } from "@decorators/di";
-import { Controller, Post, Request, Response } from "@decorators/express";
-import { CompanyService } from "../services/company";
+import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
+import { CompanyEntity } from "../entities/Company";
+import { getManager } from "typeorm";
 
+export async function AddCompany(req: Request, res: Response) {
+  const companyRepository = getManager().getRepository(CompanyEntity);
 
-@Controller('/company')
-@Injectable()
-export class CompanyController {
-    constructor(
-        private readonly companyService: CompanyService
-    ) {}
+  const { companyName, workType, coreTime } = req.body;;
 
-    @Post('/new')
-    async AddNewCompany(
-        @Request() req: any,
-        @Response() res: any
-    ) { 
-        const { companyName, workType } = req.body;
-        const company = await this.companyService.getCompanyId(companyName);
-        console.log(company);
-        if(!company) {
-            await this.companyService.AddCompany(companyName, workType);
-            return res.status(202).json({
-                message: "회사 등록 성공"
-            });
-        } else return res.status(409).json({
-            message: "이미 등록된 회사"
-        })
+  try{
+
+    const company = await companyRepository.findOne({
+      where: { company_name : companyName }
+    });
+
+    if(company) throw Error;
+    else { 
+        const newCompany = companyRepository.create({
+            company_name: companyName,
+            work_type: workType,
+            coretime: coreTime
+        });
+        await companyRepository.save(newCompany);
+        res.status(202).json({
+            message: "회사 등록 성공"
+        });
     }
-
+  } catch(err) {
+    console.error(err);
+    res.status(409).json({
+      message: "중복된 회사명"
+    });
+  }
 }

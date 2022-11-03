@@ -1,71 +1,91 @@
-import {
-    Response,
-    Request,
-    Controller,
-    Get,
-    Delete,
-    Put,
-    Body,
-    Post,
-} from '@decorators/express';
-import { Injectable } from '@decorators/di';
-import { AuthService } from '../services/auth';
-import { CompanyService } from '../services/company';
-import { DepartmentService } from '../services/department';
-import { access } from '../utils/jwt';
+import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
+import { UserEntity } from "../entities/User";
+import crypto from "crypto";
+import { getManager } from "typeorm";
+import { CompanyEntity } from "../entities/Company";
+const salt = process.env.SALT;
 
-@Controller('/auth')
-@Injectable()
-export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-        private readonly companyService: CompanyService,
-        private readonly departmentService: DepartmentService
-        ) {
-        console.log('AuthController Attached!');
-    }
+export async function createUser(req: Request, res: Response) {
+  const userRepository = getManager().getRepository(UserEntity);
+  const companyRepository = getManager().getRepository(CompanyEntity);
 
-    @Post('/new')
-    async createNewUser(@Request() req: any, @Response() res: any ) {
-        const { email, password, company, department, position } = req.body;
-        const companyId = await this.companyService.getCompanyId(company);
-        const departmentId = await this.departmentService.getDepartmentId(company.id,department);
-        const user = await this.authService.createAndGetUser(email, password, company.id, departmentId, position );
-        const token = await access(user,0);
-        return res.status(200).json({
-            token: token
-        })
-    }
+  const { email, name, password, companyName, position, department } = req.body;
 
-    @Post('/local')
-    async loginUser(@Request() req: any, @Response() res: any ) {
-        const { email, password } = req.body;
-        const user = await this.authService.getUserByIdPw(email, password );
-        const token = await access(user,0);
-        return res.status(200).json({
-            token: token
-        })
-    }
+  const hashPassword = crypto
+    .createHash('sha512')
+    .update(password + salt)
+    .digest('hex');
 
-    @Post('/admin/new')
-    async createNewAdmin(@Request() req: any, @Response() res: any ) {
-        const { email, password, company, department, position } = req.body;
-        const companyId = await this.companyService.getCompanyId(company);
-        const departmentId = await this.departmentService.getDepartmentId(company.id,department);
-        const admin = await this.authService.createAndGetAdmin(email, password, company.id, departmentId, position );
-        const token = await access(admin,1);
-        return res.status(200).json({
-            token: token
-        })
-    }
+  try{
 
-    @Post('/admin/local')
-    async loginAdmin(@Request() req: any, @Response() res: any ) {
-        const { email, password } = req.body;
-        const admin = await this.authService.getAdminByIdPw(email, password );
-        const token = await access(admin,1);
-        return res.status(200).json({
-            token: token
-        })
-    }
-}
+    const company = await companyRepository.findOne({
+      where: { company_name : companyName }
+    });
+
+    const newUser = userRepository.create({
+      email,
+      name,
+      password: hashPassword,
+      company_id: company?.id,
+      position : position,
+      department: department
+    });
+
+    await userRepository.save(newUser);
+
+    res.status(202).json({
+      message: "회원가입 성공"
+    });
+  } catch(err) {
+    console.error(err);
+    res.status(409).json({
+      message: "이미 가입된 이메일"
+  });
+  }
+};
+
+export async function login(req: Request, res: Response) {
+  const userRepository = getManager().getRepository(UserEntity);
+
+  const { email, password } = req.body;
+  const secretKey = req.app.get("jwt-secret");
+
+  const hashPassword = crypto
+      .createHash('sha512')
+      .update(password + salt)
+      .digest('hex')
+
+  try{
+      const user = await userRepository.findOne({
+          where: {
+              email: email
+          }
+      });
+
+      if(user?.password == hashPassword) {
+          const accessToken = jwt.sign(
+              {
+                  id: user?.id
+              }, secretKey,
+              {
+                  expiresIn: "100h"
+              }
+          );
+
+          res.status(200).json({
+              message: "로그인 성공",
+              accessToken
+          });
+      } else {
+          res.status(401).json({
+              message: "맞지 않은 비밀번호"
+          });
+      }
+  } catch(err) {
+      console.error(err);
+      res.status(404).json({
+          message: "회원가입 되지 않은 이메일"
+      });
+  };
+};
