@@ -12,6 +12,7 @@ import {
     OneToMany,
 } from 'typeorm';
 import { BelongEntity } from './Belong';
+import { CommuteEntity } from './Commute';
 import { CompanyEntity } from './Company';
 import { DepartmentEntity } from './Department';
 
@@ -22,6 +23,10 @@ export class UserEntity {
     @OneToMany(
         (type) => BelongEntity,
         (belong) => belong.user
+    )
+    @OneToMany(
+        (type) => CommuteEntity,
+        (commute) => commute.user
     )
     id: number;
 

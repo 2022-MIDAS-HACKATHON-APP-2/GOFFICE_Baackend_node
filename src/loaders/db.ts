@@ -1,6 +1,8 @@
 import { Container } from '@decorators/di';
 import { createConnection } from 'typeorm';
+import { AdminEntity } from '../entities/Admin';
 import { BelongEntity } from '../entities/Belong';
+import { CommuteEntity } from '../entities/Commute';
 import { CompanyEntity } from '../entities/Company';
 import { DepartmentEntity } from '../entities/Department';
 import { UserEntity } from '../entities/User';
@@ -20,6 +22,8 @@ export default async () => {
             DepartmentEntity,
             CompanyEntity,
             BelongEntity,
+            AdminEntity,
+            CommuteEntity
         ],
         migrations: [],
         subscribers: [],
@@ -41,6 +45,14 @@ export default async () => {
                 {
                     provide: BelongEntity,
                     useValue: connection.getRepository(BelongEntity),
+                },
+                {
+                    provide: AdminEntity,
+                    useValue: connection.getRepository(AdminEntity),
+                },
+                {
+                    provide: CommuteEntity,
+                    useValue: connection.getRepository(CommuteEntity),
                 },
             ]);
             console.log('Database Connected!');

@@ -10,6 +10,7 @@ import {
     ManyToMany,
     JoinTable,
     OneToMany,
+    Timestamp,
 } from 'typeorm';
 import { BelongEntity } from './Belong';
 import { DepartmentEntity } from './Department';
@@ -17,33 +18,34 @@ import { UserEntity } from './User';
 import { WORK_TYPE } from './common/Worktype';
 import { AdminEntity } from './Admin';
 
-@Entity('company')
+@Entity('commute')
 @Injectable()
-export class CompanyEntity {
+export class CommuteEntity {
     
     @PrimaryGeneratedColumn()
-    @OneToMany(
-        (type) => UserEntity,
-        (user) => user.company
-    )
-    @OneToMany(
-        (type) => AdminEntity,
-        (admin) => admin.company
-    )
-    @OneToMany(
-        (type) => DepartmentEntity,
-        (department) => department.company
-    )
-    @OneToMany(
-        (type) => BelongEntity,
-        (belong) => belong.company
-    )
     id: number;
 
-    @Column({ nullable: false })
-    company_name: string;
+    @ManyToOne(
+        (type) => UserEntity,
+        (user) => user.id
+    )
+    user: number;
 
-    @Column({ type: 'enum', name: 'work_type', enum: WORK_TYPE })
-    work_type: WORK_TYPE;
+    @Column({ type: 'timestamp' })
+    work_date: Date | undefined;
+
+    @Column({ type: 'timestamp' })
+    started_time: Timestamp;
+
+    @Column({ type: 'timestamp' })
+    left_time: Timestamp;
+
+    @Column({ type: 'timestamp' })
+    working_time: Timestamp;
+
+    @Column({ type: 'timestamp' })
+    resting_time: Timestamp;
+
+
 
 }
