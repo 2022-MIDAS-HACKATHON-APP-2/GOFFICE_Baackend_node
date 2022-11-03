@@ -70,7 +70,7 @@ export async function login(req: Request, res: Response) {
           const accessToken = jwt.sign(
               {
                   id: user?.id,
-                  type: user.position,
+                  position : user.position,
                   company_id: user?.company_id
               }, secretKey,
               {
