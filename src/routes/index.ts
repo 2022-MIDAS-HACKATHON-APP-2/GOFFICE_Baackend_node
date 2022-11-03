@@ -14,7 +14,7 @@ router.use("/rest", authMiddleware, RestReq);
 router.use("/post", authMiddleware,Comment);
 router.use("/admin", authMiddleware, Admin);
 router.use("/post", authMiddleware, Post);
-// router.use("/commute", authMiddleware, Commute);
+router.use("/commute", authMiddleware, Commute);
 router.use("/user", User);
 router.use("/company", Company);
 
