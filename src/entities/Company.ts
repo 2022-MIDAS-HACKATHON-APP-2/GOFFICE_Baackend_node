@@ -12,38 +12,40 @@ import {
     OneToMany,
 } from 'typeorm';
 import { BelongEntity } from './Belong';
-import { DepartmentEntity } from './Department';
 import { UserEntity } from './User';
 import { WORK_TYPE } from './common/Worktype';
-import { AdminEntity } from './Admin';
+import { PostEntity } from './Post';
+import { CommuteEntity } from './Commute';
 
-@Entity('company')
-@Injectable()
+@Entity({name : 'company'})
 export class CompanyEntity {
-    
     @PrimaryGeneratedColumn()
-    @OneToMany(
-        (type) => UserEntity,
-        (user) => user.company
-    )
-    @OneToMany(
-        (type) => AdminEntity,
-        (admin) => admin.company
-    )
-    @OneToMany(
-        (type) => DepartmentEntity,
-        (department) => department.company
-    )
-    @OneToMany(
-        (type) => BelongEntity,
-        (belong) => belong.company
-    )
     id: number;
 
     @Column({ nullable: false })
     company_name: string;
 
-    @Column({ type: 'enum', name: 'work_type', enum: WORK_TYPE })
+    @Column({ type: 'enum', enum: WORK_TYPE, nullable: false })
     work_type: WORK_TYPE;
 
+    @Column({ nullable : false })
+    coretime: number;
+
+    @OneToMany(() => UserEntity, (user) => user.company)
+    user: UserEntity[];
+
+    @OneToMany(() => BelongEntity, (belong) => belong.company)
+    belong: BelongEntity[];
+
+    @OneToMany(() => CommuteEntity, (commute) => commute.company)
+    commute: CommuteEntity[];
+
+    @OneToMany(() => PostEntity, (post) => post.company)
+    post: PostEntity[];
+    
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 }

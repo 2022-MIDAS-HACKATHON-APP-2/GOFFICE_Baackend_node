@@ -11,12 +11,10 @@ import {
     JoinTable,
     OneToMany,
 } from 'typeorm';
-import { BelongEntity } from './Belong';
 import { CompanyEntity } from './Company';
-import { DepartmentEntity } from './Department';
 
-@Entity('admin')
-@Injectable()
+
+@Entity({name : 'admin'})
 export class AdminEntity {
     @PrimaryGeneratedColumn()
     id: number;
@@ -27,17 +25,10 @@ export class AdminEntity {
     @Column({ nullable: false })
     password: string;
 
-    @ManyToOne(
-        (type) => CompanyEntity,
-        (company) => company.id
-    )
-    company: number;
+    @Column({ nullable: false })
+    company_id: number;
 
-
-    @ManyToOne(
-        (type) => DepartmentEntity,
-        (department) => department.id
-    )
-    department: number;
-
+    @ManyToOne(() => CompanyEntity, (company) => company.id)
+    @JoinColumn({ name : 'company_id'})
+    company: CompanyEntity;
 }

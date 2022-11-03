@@ -13,26 +13,23 @@ import {
     Timestamp,
 } from 'typeorm';
 import { BelongEntity } from './Belong';
-import { DepartmentEntity } from './Department';
 import { UserEntity } from './User';
 import { WORK_TYPE } from './common/Worktype';
-import { AdminEntity } from './Admin';
+import { CompanyEntity } from './Company';
 
-@Entity('commute')
-@Injectable()
+@Entity({name : 'commute'})
 export class CommuteEntity {
-    
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(
-        (type) => UserEntity,
-        (user) => user.id
-    )
-    user: number;
+    @Column()
+    user_id: number;
+
+    @Column()
+    company_id: number;
 
     @Column({ type: 'timestamp' })
-    work_date: Date | undefined;
+    work_date: Date;
 
     @Column({ type: 'timestamp' })
     started_time: Timestamp;
@@ -46,6 +43,11 @@ export class CommuteEntity {
     @Column({ type: 'timestamp' })
     resting_time: Timestamp;
 
+    @ManyToOne(() => UserEntity, (user) => user.commute)
+    @JoinColumn({ name: 'user_id' })
+    user: UserEntity;
 
-
+    @ManyToOne(() => CompanyEntity, (company) => company.commute)
+    @JoinColumn({ name: 'company_id' })
+    company: CommuteEntity;
 }

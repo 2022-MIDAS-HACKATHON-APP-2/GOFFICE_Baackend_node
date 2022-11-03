@@ -7,49 +7,56 @@ import {
     UpdateDateColumn,
     ManyToOne,
     JoinColumn,
-    ManyToMany,
-    JoinTable,
     OneToMany,
 } from 'typeorm';
+import { ScheduleEntity } from './ Schedule';
 import { BelongEntity } from './Belong';
 import { CommuteEntity } from './Commute';
 import { CompanyEntity } from './Company';
-import { DepartmentEntity } from './Department';
+import { PostEntity } from './Post';
 
-@Entity('user')
-@Injectable()
+@Entity({name : 'user'})
 export class UserEntity {
     @PrimaryGeneratedColumn()
-    @OneToMany(
-        (type) => BelongEntity,
-        (belong) => belong.user
-    )
-    @OneToMany(
-        (type) => CommuteEntity,
-        (commute) => commute.user
-    )
     id: number;
 
     @Column({ nullable: false, unique: true })
     email: string;
 
     @Column({ nullable: false })
+    name: string;
+
+    @Column({ nullable: false })
     password: string;
-
-    @ManyToOne(
-        (type) => CompanyEntity,
-        (company) => company.id
-    )
-    company: number;
-
-
-    @ManyToOne(
-        (type) => DepartmentEntity,
-        (department) => department.id
-    )
-    department: number;
 
     @Column({ nullable: false })
     position: string;
 
+    @Column({ nullable: false })
+    company_id: number;
+
+    @Column({ nullable: false })
+    department: string;
+    
+    @ManyToOne(() => CompanyEntity, (company) => company.user)
+    @JoinColumn({ name: 'company_id' })
+    company: CompanyEntity;
+
+    @OneToMany(() => BelongEntity, (belong) => belong.user)
+    belong: BelongEntity[];
+
+    @OneToMany(() => CommuteEntity, (commute) => commute.user)
+    commute: CommuteEntity[];
+
+    @OneToMany(() => PostEntity, (post) => post.user)
+    post: PostEntity[];
+
+    @OneToMany(() => ScheduleEntity, (schedule) => schedule.user)
+    schedule: ScheduleEntity[];
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 }
