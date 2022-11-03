@@ -4,15 +4,16 @@ import Company from "./company";
 import Admin from "./admin";
 import Post from "./post";
 import Commute from "./commute";
-
+import Comment from "./comment";
 import { authMiddleware } from "../middlewares/auth";
 
 const router = express();
 
+router.use("/post", authMiddleware,Comment);
 router.use("/admin", authMiddleware, Admin);
-router.use("/post", authMiddleware, Post)
+router.use("/post", authMiddleware, Post);
+router.use("/commute", authMiddleware, Commute);
 router.use("/user", User);
 router.use("/company", Company);
-router.use("/commute", authMiddleware, Commute);
 
 export default router;
