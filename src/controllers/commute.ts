@@ -5,7 +5,7 @@ import { UserEntity } from "../entities/User";
 
 export async function goWork(req: Request, res: Response) {
     const commuteRepository = getManager().getRepository(CommuteEntity);
-    const userRepository = getManager().getRepository(UserEntity);
+    const userRepo = getManager().getRepository(UserEntity);
     const user = (<any>req).decoded;
     const currentTime = new Date();
     const year = currentTime.getFullYear();
@@ -13,7 +13,6 @@ export async function goWork(req: Request, res: Response) {
     const date = currentTime.getDate();
     const dateStr = `${year}-${month >= 10 ? month : '0' + month}-${date >= 10 ? date : '0' + date}`;
     try {
-<<<<<<< Updated upstream
         const getUser = await userRepo.findOne({where: {
             id: (<any>req).decoded.id
         }});
@@ -21,8 +20,6 @@ export async function goWork(req: Request, res: Response) {
         // const commute = await commuteRepository.findOne({
         //     where: { user_id: (<any>req).decoded.id, Date(work_date) :  }
         // });
-=======
->>>>>>> Stashed changes
         const commute = await commuteRepository.findOne({
             where: { user_id: (<any>req).decoded.id, work_date : Raw(work_date => `DATE(${work_date})='${dateStr}'`)  }
         });
@@ -33,11 +30,7 @@ export async function goWork(req: Request, res: Response) {
             const newCom = commuteRepository.create({
                 user_id: (<any>req).decoded.id,
                 started_time: currentTime,
-<<<<<<< Updated upstream
                 company_id: getUser?.company_id,
-=======
-                company_id: user?.company_id,
->>>>>>> Stashed changes
                 work_date: currentTime
             });
             await commuteRepository.save(newCom);
