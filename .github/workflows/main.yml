@@ -22,10 +22,9 @@ jobs:
         echo "$PROCFILE" > Procfile
     - name: Generate ENV
       env:
-        ENV_B64: "${{ secrets.ENV }}"
+        ENV: "${{ secrets.ENV }}"
       run: |
-        echo "$ENV_B64" > .envB64
-        base64 -d -i .envB64 > .env
+        echo "$ENV" > .env
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.5.1
     - name: Build 
