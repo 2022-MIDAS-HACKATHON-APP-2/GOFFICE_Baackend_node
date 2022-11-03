@@ -12,7 +12,6 @@ import {
     OneToMany,
     Timestamp,
 } from 'typeorm';
-import { BelongEntity } from './Belong';
 import { UserEntity } from './User';
 import { WORK_TYPE } from './common/Worktype';
 import { CompanyEntity } from './Company';
