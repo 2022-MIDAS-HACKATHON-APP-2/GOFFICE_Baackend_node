@@ -22,7 +22,9 @@ export async function createUser(req: Request, res: Response) {
     const company = await companyRepository.findOne({
       where: { company_name : companyName }
     });
+    if(!company) return res.status(404).json({ message: "존재하지 않는 회사" });
 
+    console.log(company);
     const newUser = userRepository.create({
       email,
       name,
@@ -41,7 +43,7 @@ export async function createUser(req: Request, res: Response) {
   } catch(err) {
     console.error(err);
     res.status(409).json({
-      message: "이미 가입된 이메일"
+      message: "회원가입 실패"
   });
   }
 };
