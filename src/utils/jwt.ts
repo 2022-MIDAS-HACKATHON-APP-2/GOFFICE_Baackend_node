@@ -8,7 +8,6 @@ export const access = async( user: UserEntity | AdminEntity, type: number) => {
         {
             type: type,
             id: user.id,
-            email: user.email
         },
         secretKey,
         {
