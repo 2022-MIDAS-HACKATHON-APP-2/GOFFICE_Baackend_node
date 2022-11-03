@@ -10,6 +10,7 @@ import {
     JoinTable,
     OneToMany,
 } from 'typeorm';
+import { CommentEntity } from './Comment';
 import { FILED } from './common/Filed';
 import { CompanyEntity } from './Company';
 import { UserEntity } from './User';
@@ -47,4 +48,7 @@ export class PostEntity {
     @ManyToOne(() => CompanyEntity, (company) => company.post)
     @JoinColumn({ name: 'company_id' })
     company: CompanyEntity;
+
+    @OneToMany(() => CommentEntity, (comment) => comment.user)
+    comment: CommentEntity[];
 }
