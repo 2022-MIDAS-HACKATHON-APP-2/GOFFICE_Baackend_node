@@ -10,7 +10,7 @@ import {
     OneToMany,
 } from 'typeorm';
 import { ScheduleEntity } from './ Schedule';
-import { BelongEntity } from './Belong';
+import { CommentEntity } from './Comment';
 import { POSITION } from './common/Position';
 import { CommuteEntity } from './Commute';
 import { CompanyEntity } from './Company';
@@ -46,11 +46,11 @@ export class UserEntity {
     @JoinColumn({ name: 'company_id' })
     company: CompanyEntity;
 
-    @OneToMany(() => BelongEntity, (belong) => belong.user)
-    belong: BelongEntity[];
-
     @OneToMany(() => CommuteEntity, (commute) => commute.user)
     commute: CommuteEntity[];
+
+    @OneToMany(() => CommentEntity, (comment) => comment.user)
+    comment: CommentEntity[];
 
     @OneToMany(() => PostEntity, (post) => post.user)
     post: PostEntity[];
