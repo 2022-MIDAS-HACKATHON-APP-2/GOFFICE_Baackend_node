@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { ScheduleEntity } from './ Schedule';
 import { BelongEntity } from './Belong';
+import { POSITION } from './common/Position';
 import { CommuteEntity } from './Commute';
 import { CompanyEntity } from './Company';
 import { PostEntity } from './Post';
@@ -23,14 +24,17 @@ export class UserEntity {
     @Column({ nullable: false, unique: true })
     email: string;
 
+    @Column({ nullable: false, unique: true })
+    phone_number: string;
+
     @Column({ nullable: false })
     name: string;
 
     @Column({ nullable: false })
     password: string;
 
-    @Column({ nullable: false })
-    position: string;
+    @Column({ type: 'enum', enum: POSITION, nullable: false })
+    position: POSITION;
 
     @Column({ nullable: false })
     company_id: number;
