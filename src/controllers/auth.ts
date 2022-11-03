@@ -10,7 +10,7 @@ export async function createUser(req: Request, res: Response) {
   const userRepository = getManager().getRepository(UserEntity);
   const companyRepository = getManager().getRepository(CompanyEntity);
 
-  const { email, name, password, companyName, position, department } = req.body;
+  const { email, name, password, phone_number, companyName, position, department } = req.body;
 
   const hashPassword = crypto
     .createHash('sha512')
@@ -26,6 +26,7 @@ export async function createUser(req: Request, res: Response) {
     const newUser = userRepository.create({
       email,
       name,
+      phone_number,
       password: hashPassword,
       company_id: company?.id,
       position : position,
@@ -67,7 +68,8 @@ export async function login(req: Request, res: Response) {
           const accessToken = jwt.sign(
               {
                   id: user?.id,
-                  type: user.position
+                  type: user.position,
+                  company_id: user?.company_id
               }, secretKey,
               {
                   expiresIn: "100h"
