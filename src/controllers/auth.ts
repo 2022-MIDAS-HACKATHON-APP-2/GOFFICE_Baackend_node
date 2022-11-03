@@ -32,20 +32,44 @@ export class AuthController {
         const companyId = await this.companyService.getCompanyId(company);
         const departmentId = await this.departmentService.getDepartmentId(companyId,department);
         const user = await this.authService.createAndGetUser(email, password, companyId, departmentId, position );
-        const token = await access(user);
+        const token = await access(user,0);
         return res.status(200).json({
             token: token
         })
     }
 
     @Post('/local')
-    async login(@Request() req: any, @Response() res: IResponse ) {
+    async loginUser(@Request() req: any, @Response() res: IResponse ) {
         const { email, password } = req.body;
         const user = await this.authService.getUserByIdPw(email, password );
-        const token = await access(user);
+        const token = await access(user,0);
         return res.status(200).json({
             token: token
         })
     }
+
+    @Post('/admin/new')
+    async createNewAdmin(@Request() req: any, @Response() res: IResponse ) {
+        const { email, password, company, department, position } = req.body;
+        const companyId = await this.companyService.getCompanyId(company);
+        const departmentId = await this.departmentService.getDepartmentId(companyId,department);
+        const admin = await this.authService.createAndGetAdmin(email, password, companyId, departmentId, position );
+        const token = await access(admin,1);
+        return res.status(200).json({
+            token: token
+        })
+    }
+
+    @Post('/admin/local')
+    async loginAdmin(@Request() req: any, @Response() res: IResponse ) {
+        const { email, password } = req.body;
+        const admin = await this.authService.getAdminByIdPw(email, password );
+        const token = await access(admin,1);
+        return res.status(200).json({
+            token: token
+        })
+    }
+
+
 
 }
