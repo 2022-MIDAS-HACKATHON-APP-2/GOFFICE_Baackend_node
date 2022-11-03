@@ -125,11 +125,11 @@ export async function readAllPost(req: Request, res: Response) {
     const postRepository = getManager().getRepository(PostEntity);
     const user = (<any>req).decoded;
     try{
-        const post = await postRepository.find(
+        const post = Array(await postRepository.find(
             { where: { company_id : user.company_id } }
-        );
+        ));
         res.status(200).json({
-            message: "게시물 삭제 성공",
+            message: "게시물 조회 성공",
             post
         })
     } catch(err) {
