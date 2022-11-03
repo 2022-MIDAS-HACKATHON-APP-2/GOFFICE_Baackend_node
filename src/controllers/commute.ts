@@ -35,7 +35,9 @@ export async function goWork(req: Request, res: Response) {
             });
             await commuteRepository.save(newCom);
         } else {
-            await commuteRepository.update(commute.id, { started_time: currentTime});
+            return res.status(200).json({
+                message: "출근 재시작"
+            });
         }
         res.status(200).json({
             message: "출근시작"
