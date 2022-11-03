@@ -25,6 +25,11 @@ app.set("jwt-secret", process.env.JWT_SECRET_KEY);
 
 app.use(cors(corsOptions));
 app.use('/', router);
+app.get('/',(req:any, res:any) => {
+    return res.status(200).json({
+        msg:"hello"
+    })
+})
 
 
 app.listen(PORT, () => {
