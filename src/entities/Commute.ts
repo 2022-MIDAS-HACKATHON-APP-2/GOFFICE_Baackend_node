@@ -27,8 +27,8 @@ export class CommuteEntity {
     @Column()
     company_id: number;
 
-    @Column()
-    work_date: string;
+    @Column({ type: 'timestamp' })
+    work_date: Timestamp;
 
     @Column({ type: 'timestamp' })
     started_time: Timestamp;
