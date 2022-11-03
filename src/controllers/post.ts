@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import { PostEntity } from "../entities/Post";
 import { getManager } from "typeorm";
+import { CommentEntity } from "../entities/Comment";
 
 export async function CreatePost(req: Request, res: Response) {
     const postRepository =  getManager().getRepository(PostEntity);
@@ -36,16 +37,16 @@ export async function updatePost(req: Request, res: Response) {
     const postRepository = getManager().getRepository(PostEntity);
 
     const { title, content } = req.body;
-    const id = Number(req.params.id);
+    const postId = Number(req.params.post_id);
     const user = (<any>req).decoded;
 
     try{
-        const post = await postRepository.findOne({ where: { id } });
+        const post = await postRepository.findOne({ where: { id: postId } });
         if(post == null) {
             throw Error;
         } else {
             await postRepository.update({
-                id,
+                id: postId,
                 user_id: user.id
             }, {
                 title,
@@ -91,17 +92,25 @@ export async function deletePost(req: Request, res: Response) {
 };
 
 export async function readOnePost(req: Request, res: Response) {
+    const commentRepository = getManager().getRepository(CommentEntity);
     const postRepository = getManager().getRepository(PostEntity);
-    const id = Number(req.params.id);
+    const postId = Number(req.params.post_id);
     const user = (<any>req).decoded;
     try{
         const post = await postRepository.findOne(
-            { where: { id } }
+            { where: { id: postId } }
+        );
+        const comments = await commentRepository.find(
+            { where: { post_id: postId} }
+        )
+        const countComment = commentRepository.count(
+            { where: { post_id: postId} }
         );
         if(post?.company_id == user.company_id) {
             res.status(200).json({
-                message: "게시물 삭제 성공",
-                post
+                post,
+                comments,
+                message: "댓글 "+countComment+"개"
             });
         } else throw Error;
     } catch(err) {
