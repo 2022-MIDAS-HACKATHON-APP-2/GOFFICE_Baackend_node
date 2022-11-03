@@ -38,4 +38,14 @@ export class AuthController {
         })
     }
 
+    @Post('/local')
+    async login(@Request() req: any, @Response() res: IResponse ) {
+        const { email, password } = req.body;
+        const user = await this.authService.getUserByIdPw(email, password );
+        const token = await access(user);
+        return res.status(200).json({
+            token: token
+        })
+    }
+
 }
