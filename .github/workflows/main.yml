@@ -20,11 +20,12 @@ jobs:
         HEROKU_PROCFILE_B64: "${{ secrets.PROCFILE }}"
       run: |
         echo "$PROCFILE" > Procfile
-    - name: Generate ENV
+    - name: Generate ormconfig.json
       env:
-        ENV: "${{ secrets.ENV }}"
+        ORMCONFIG: "${{ secrets.ORMCONFIG }}"
       run: |
-        echo "$ENV" > .env
+        echo "$ORMCONFIG" > ormconfig.json.b64
+        base64 -d -i ormconfig.json.b64 > ormconfig.json
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.5.1
     - name: Build 
