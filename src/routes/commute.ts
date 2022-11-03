@@ -4,7 +4,8 @@ import { authMiddleware } from "../middlewares/auth";
 
 const router = express();
 
-router.post('/start', authMiddleware, controller.goWork)
+router.post('/start',  controller.goWork)
+router.post('/end',  controller.exitWork)
 
 
 export default router;
