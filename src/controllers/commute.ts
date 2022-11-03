@@ -9,7 +9,7 @@ export async function goWork(req: Request, res: Response) {
     const user = (<any>req).decoded;
     const currentTime = new Date();
     const date = currentTime.toLocaleDateString();
-    const startTime = currentTime.toLocaleTimeString();
+    const startTime = currentTime.getTime();
     try {
         const getUser = await userRepo.findOne({where: {
             id: (<any>req).decoded.id
@@ -21,7 +21,6 @@ export async function goWork(req: Request, res: Response) {
         const commute = await commuteRepository.findOne({
             where: { user_id: user.id, work_date : date }
         });
-
         if(!commute) {
             const newCom = commuteRepository.create({
                 user_id: user.id,
@@ -30,9 +29,7 @@ export async function goWork(req: Request, res: Response) {
                 work_date: date
             });
             await commuteRepository.save(newCom);
-        } else {
-            await commuteRepository.update(commute.id, { started_time: currentTime});
-        }
+        } else throw Error;
         res.status(200).json({
             message: "출근시작"
         });
