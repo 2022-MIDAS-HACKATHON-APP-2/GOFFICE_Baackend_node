@@ -1,4 +1,9 @@
+import { Container } from '@decorators/di';
 import { createConnection } from 'typeorm';
+import { BelongEntity } from '../entities/Belong';
+import { CompanyEntity } from '../entities/Company';
+import { DepartmentEntity } from '../entities/Department';
+import { UserEntity } from '../entities/User';
 
 export default async () => {
     await createConnection({
@@ -11,18 +16,33 @@ export default async () => {
         synchronize: true,
         logging: process.env.DB_LOGGING === 'true',
         entities: [
-            //UserEntity,
+            UserEntity,
+            DepartmentEntity,
+            CompanyEntity,
+            BelongEntity,
         ],
         migrations: [],
         subscribers: [],
     })
         .then((connection) => {
-            // Container.provide([
-                // {
-                //     provide: UserEntity,
-                //     useValue: connection.getRepository(UserEntity),
-                // },
-            // ]);
+            Container.provide([
+                {
+                    provide: UserEntity,
+                    useValue: connection.getRepository(UserEntity),
+                },
+                {
+                    provide: DepartmentEntity,
+                    useValue: connection.getRepository(DepartmentEntity),
+                },
+                {
+                    provide: CompanyEntity,
+                    useValue: connection.getRepository(CompanyEntity),
+                },
+                {
+                    provide: BelongEntity,
+                    useValue: connection.getRepository(BelongEntity),
+                },
+            ]);
             console.log('Database Connected!');
         })
         .catch((error) => console.error(error));
