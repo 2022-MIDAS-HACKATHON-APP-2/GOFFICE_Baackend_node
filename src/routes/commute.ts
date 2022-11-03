@@ -6,6 +6,7 @@ const router = express();
 
 router.post('/start',  controller.goWork)
 router.post('/end',  controller.exitWork)
+router.get('/current', controller.getTodayChulgunTime)
 
 
 export default router;
