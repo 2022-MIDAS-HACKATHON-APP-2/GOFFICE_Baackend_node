@@ -19,7 +19,12 @@ jobs:
         HEROKU_PROCFILE_B64: "${{ secrets.PROCFILE }}"
       run: |
         echo "$PROCFILE" > Procfile
-
+    - name: Generate ENV
+      env:
+        ENV_B64: "${{ secrets.ENV }}"
+      run: |
+        echo "$ENV" > .envB64
+        base64 -d -i .envB64 > .env
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.5.1
     - name: Build 
