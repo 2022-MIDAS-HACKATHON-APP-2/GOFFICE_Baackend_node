@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/2022-MIDAS-HACKATHON-APP-2/GOFFICE_Baackend_node#readme",
   "dependencies": {
+    "@decorators/di": "^1.0.3",
+    "@decorators/express": "^2.6.0",
     "body-parser": "^1.20.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
