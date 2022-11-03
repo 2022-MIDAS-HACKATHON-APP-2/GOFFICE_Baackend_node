@@ -11,6 +11,7 @@ import {
     JoinTable,
     PrimaryColumn,
 } from 'typeorm';
+import { STATE } from './common/State';
 import { CompanyEntity } from './Company';
 import { PostEntity } from './Post';
 import { UserEntity } from './User';
@@ -31,6 +32,9 @@ export class RestReqEntity {
 
     @Column({ nullable: false })
     reason: string;
+
+    @Column({ type: 'enum', enum: STATE, nullable: false, default: STATE.A})
+    state: STATE;
 
     @ManyToOne(() => UserEntity, (user) => user.comment)
     @JoinColumn({ name: 'user_id' })

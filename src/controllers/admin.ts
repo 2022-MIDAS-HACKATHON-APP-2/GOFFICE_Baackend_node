@@ -3,6 +3,8 @@ import { UserEntity } from "../entities/User";
 import { getManager } from "typeorm";
 import { CompanyEntity } from "../entities/Company";
 import { POSITION } from "../entities/common/Position";
+import { RestReqEntity } from "../entities/restReq";
+import { STATE } from "../entities/common/State";
 
 
 async function checkManager(position: string, res: Response) {
@@ -87,3 +89,84 @@ export async function viewOneMember(req: Request, res: Response) {
     }
 };
 
+export async function deleteMember(req: Request, res: Response) {
+    const memberRepository = getManager().getRepository(UserEntity);
+    const manager = (<any>req).decoded;
+    const memberId = Number(req.params.member_id);
+
+    try{
+        if(memberId==manager.id) return res.status(400).json({ message : "본인 삭제는 불가능"});
+        checkManager(manager.position, res);
+        const member = await memberRepository.findOne(
+            { where: { company_id: manager.company_id, id: memberId }}
+        );
+        if(member) {
+            memberRepository.delete({ id : memberId });
+            return res.status(200).json({
+                message: "회원 삭제 성공"
+            });
+        } else throw Error;
+    } catch(err) {
+        console.error(err);
+        res.status(400).json({
+            message: "회원 삭제 실패"
+        })
+    };
+}
+
+export async function veiwRestRes(req: Request, res: Response) {
+    const restReqRepository = getManager().getRepository(RestReqEntity);
+    const manager = (<any>req).decoded;
+
+    try{
+        const resting = restReqRepository.find({where: {company_id: manager.company_id}});
+        res.status(200).json({
+            resting
+        });
+    } catch(err) {
+        console.error(err);
+        res.status(400).json({
+            message: "조회 실패"
+        })
+    }
+}
+
+export async function restRes(req: Request, res: Response) {
+    const restReqRepository = getManager().getRepository(RestReqEntity);
+    const manager = (<any>req).decoded;
+
+    try{
+        const resting = restReqRepository.update(
+            { company_id: manager.company_id }, 
+            { state: STATE.B }
+        );
+        res.status(200).json({
+            message: "승인 성공",
+            resting
+        });
+    } catch(err) {
+        console.error(err);
+        res.status(400).json({
+            message: "승인 실패"
+        })
+    }
+}export async function restResFail(req: Request, res: Response) {
+    const restReqRepository = getManager().getRepository(RestReqEntity);
+    const manager = (<any>req).decoded;
+
+    try{
+        const resting = restReqRepository.update(
+            { company_id: manager.company_id }, 
+            { state: STATE.C }
+        );
+        res.status(200).json({
+            message: "거절 성공",
+            resting
+        });
+    } catch(err) {
+        console.error(err);
+        res.status(400).json({
+            message: "승인 실패"
+        })
+    }
+}

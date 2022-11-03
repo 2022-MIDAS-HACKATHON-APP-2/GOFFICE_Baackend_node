@@ -26,3 +26,20 @@ export async function sendRestReq(req: Request, res: Response) {
         })
     }
 };
+
+export async function viewMyRest(req: Request, res: Response) {
+    const restReqRepository = getManager().getRepository(RestReqEntity);
+    const user = (<any>req).decoded;
+
+    try{
+        const restRes = restReqRepository.find({ where: {user_id: user.id }});
+        return res.status(202).json({
+            restRes,
+        });
+    } catch(err) {
+        console.error(err);
+        res.status(400).json({
+            message: "조회 실패"
+        })
+    }
+};

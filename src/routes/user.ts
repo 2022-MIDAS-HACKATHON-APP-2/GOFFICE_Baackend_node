@@ -4,6 +4,7 @@ import { authMiddleware } from "../middlewares/auth";
 
 const router = express();
 
+router.get("/mypage", authMiddleware, controller.showMyPage);
 router.post("/signup", controller.createUser);
 router.post("/login", controller.login);
 router.get("/:user_id", controller.showInfo);
