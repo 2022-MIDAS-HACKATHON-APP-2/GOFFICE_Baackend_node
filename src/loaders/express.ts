@@ -1,4 +1,4 @@
-import express, { Request, Response, Express } from 'express';
+import express, { Request, Response, Express, NextFunction } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -10,14 +10,12 @@ export default async (app: Express) => {
         app.use(helmet());
     }
     app.use(morgan(process.env.NODE_ENV == 'production' ? 'combined' : 'dev'));
-    app.use(
-        cors({
-            origin: '*',
-            methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-            credentials: true,
-            allowedHeaders: ['content-type','x-access-token']
-        })
-    );
+    app.use((req: Request, res: Response, next: NextFunction) => {
+		res.header('Access-Control-Allow-Origin', '*')
+		res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH')
+		res.header('Access-Control-Allow-Headers', 'content-type, x-access-token')
+		next()
+	})
     app.use(express.json({ limit: '16mb' }));
     app.use(
         express.urlencoded({
