@@ -8,8 +8,10 @@ export async function goWork(req: Request, res: Response) {
     const userRepo = getManager().getRepository(UserEntity);
     const user = (<any>req).decoded;
     const currentTime = new Date();
-    const date = currentTime.toLocaleDateString();
-    const startTime = currentTime.getTime();
+    const year = currentTime.getFullYear();
+    const month = currentTime.getMonth() + 1;
+    const date = currentTime.getDate();
+    const dateStr = `${year}-${month >= 10 ? month : '0' + month}-${date >= 10 ? date : '0' + date}`;
     try {
         const getUser = await userRepo.findOne({where: {
             id: (<any>req).decoded.id
@@ -19,17 +21,22 @@ export async function goWork(req: Request, res: Response) {
         //     where: { user_id: (<any>req).decoded.id, Date(work_date) :  }
         // });
         const commute = await commuteRepository.findOne({
-            where: { user_id: user.id, work_date : date }
+            where: { user_id: (<any>req).decoded.id, work_date : Raw(work_date => `DATE(${work_date})='${dateStr}'`)  }
         });
+
+
+        //const commute = await commuteRepository.q
         if(!commute) {
             const newCom = commuteRepository.create({
-                user_id: user.id,
-                started_time: startTime,
-                company_id: user?.company_id,
-                work_date: date
+                user_id: (<any>req).decoded.id,
+                started_time: currentTime,
+                company_id: getUser?.company_id,
+                work_date: currentTime
             });
             await commuteRepository.save(newCom);
-        } else throw Error;
+        } else {
+            await commuteRepository.update(commute.id, { started_time: currentTime});
+        }
         res.status(200).json({
             message: "출근시작"
         });
