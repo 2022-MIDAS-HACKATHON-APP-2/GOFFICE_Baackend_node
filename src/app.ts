@@ -8,8 +8,8 @@ async function bootstrap() {
     const app = express();
     dotenv.config();
     await loaders({ app });
-    app.listen(app.get('service_port'), () => {
-        console.log(`Server is running port ${app.get('service_port')}`);
+    app.listen(process.env.PORT , () => {
+        console.log(`Server is running port ${process.env.PORT}`);
     });
 }
 
