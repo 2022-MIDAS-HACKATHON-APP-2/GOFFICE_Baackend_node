@@ -11,11 +11,11 @@ import {
     JoinTable,
     OneToMany,
 } from 'typeorm';
-import { BelongEntity } from './Belong';
 import { UserEntity } from './User';
 import { WORK_TYPE } from './common/Worktype';
 import { PostEntity } from './Post';
 import { CommuteEntity } from './Commute';
+import { RestReqEntity } from './restReq';
 
 @Entity({name : 'company'})
 export class CompanyEntity {
@@ -34,14 +34,14 @@ export class CompanyEntity {
     @OneToMany(() => UserEntity, (user) => user.company)
     user: UserEntity[];
 
-    @OneToMany(() => BelongEntity, (belong) => belong.company)
-    belong: BelongEntity[];
-
     @OneToMany(() => CommuteEntity, (commute) => commute.company)
     commute: CommuteEntity[];
 
     @OneToMany(() => PostEntity, (post) => post.company)
     post: PostEntity[];
+
+    @OneToMany(() => RestReqEntity, (restReq) => restReq.company)
+    restReq: RestReqEntity[];
     
     @CreateDateColumn()
     createdAt: Date;
