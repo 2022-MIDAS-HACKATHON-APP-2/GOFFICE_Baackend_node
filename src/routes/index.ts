@@ -3,7 +3,7 @@ import User from "./user";
 import Company from "./company";
 import Admin from "./admin";
 import Post from "./post";
-// import Commute from "./commute";
+import Commute from "./commute";
 import Comment from "./comment";
 import RestReq from "./restReq";
 import { authMiddleware } from "../middlewares/auth";
