@@ -13,7 +13,7 @@ export const ENV_LIST = [
 
 export default async () => {
     if(!process.env.NODE_ENV) process.env.NODE_ENV = 'production';
-    if(!process.env.PORT) process.env.PORT = '80';
+    if(!process.env.PORT) process.env.PORT = '3000';
     for(const env of ENV_LIST) {
         if(!process.env[env]) throw new Error(format(env))
     }
