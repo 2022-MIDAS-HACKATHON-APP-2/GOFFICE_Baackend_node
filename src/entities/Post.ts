@@ -1,4 +1,3 @@
-import { Injectable } from '@decorators/di';
 import {
     Entity,
     Column,
@@ -11,6 +10,7 @@ import {
     JoinTable,
     OneToMany,
 } from 'typeorm';
+import { FILED } from './common/Filed';
 import { CompanyEntity } from './Company';
 import { UserEntity } from './User';
 
@@ -24,6 +24,9 @@ export class PostEntity {
 
     @Column({ length: 255, nullable: false })
     content: string;
+
+    @Column({ type: 'enum', enum: FILED, nullable: false })
+    field: FILED;
 
     @CreateDateColumn()
     createdAt: Date;
