@@ -66,7 +66,8 @@ export async function login(req: Request, res: Response) {
       if(user?.password == hashPassword) {
           const accessToken = jwt.sign(
               {
-                  id: user?.id
+                  id: user?.id,
+                  type: user.position
               }, secretKey,
               {
                   expiresIn: "100h"

@@ -21,7 +21,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.set("jwt-secret", process.env.KEY);
+app.set("jwt-secret", process.env.JWT_SECRET_KEY);
 
 app.use(cors(corsOptions));
 app.use('/', router);
