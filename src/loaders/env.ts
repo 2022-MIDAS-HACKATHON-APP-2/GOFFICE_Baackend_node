@@ -8,7 +8,7 @@ export const ENV_LIST = [
     'DB_HOST',
     'DB_USERNAME',
     'DB_PASSWORD',
-    'JWT_SECRET'
+    'JWT_SECRET_KEY'
 ];
 
 export default async () => {
