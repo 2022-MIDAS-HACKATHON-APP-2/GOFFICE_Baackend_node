@@ -94,3 +94,27 @@ export async function login(req: Request, res: Response) {
       });
   };
 };
+
+export async function showInfo(req: Request, res: Response) {
+  const userRepository = getManager().getRepository(UserEntity);
+  const companyRepository = getManager().getRepository(CompanyEntity);
+  const user_id= Number(req.params.user_id);
+
+  try{
+    const userInfo = await userRepository.findOne({where: { id: user_id }});
+    const companyInfo = await companyRepository.findOne({where: {id: userInfo?.company_id}});
+    const userCounting = await userRepository.count({where: { company_id: userInfo?.company_id}})
+    if(userInfo){
+      return res.status(200).json({
+        message: userCounting+"명이 이 회사 사원으로 등록되어 있음",
+        userInfo,
+        companyInfo
+      })
+    } else throw Error;
+  } catch(err) {
+    console.error(err);
+    res.status(404).json({
+      message: "회원 정보 조회 실패"
+    });
+  }
+}
