@@ -5,5 +5,4 @@ const router = express();
 
 router.post("/add", controller.AddCompany);
 
-
 export default router;
