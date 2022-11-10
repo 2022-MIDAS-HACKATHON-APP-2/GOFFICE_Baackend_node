@@ -11,6 +11,8 @@
 Icon
 
 
+ormconfig.json
+
 # Thumbnails
 ._*
 
@@ -307,4 +309,3 @@ fabric.properties
 .idea/**/azureSettings.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,webstorm,node
-ormconfig.json
